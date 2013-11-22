@@ -1,39 +1,41 @@
-exports.index = function(db) {
-    return function(req, res){
-        db.collection('listings').distinct('category', function(err, categories) {
-            res.render('index', { title: 'Nicks List', categories: categories });
-        });
-    };
+var mongoose = require('mongoose');
+
+var listingSchema = mongoose.Schema({
+    title: String,
+    user: String,
+    description: String,
+    category: String
+});
+
+var Listing = mongoose.model('Listing', listingSchema);
+
+exports.index = function(req, res){
+    Listing.find().distinct('category', function(err, categories) {
+        res.render('index', { title: 'Nicks List', categories: categories });
+    });
 };
 
-exports.category = function(db) {
-    return function(req, res){
-        var category =  req.params.category
-        var query = {category: req.params.category};
-        db.collection('listings').find(query).toArray(function(err, listings) {
-            res.render('category', { title: category, listings: listings });
-        });
-    }
-}
-
-exports.addListing = function(db) {
-    return function(req, res){
-        var newPost = 
-            {title: req.body.title,
-             user: req.body.user,
-             description: req.body.description,
-             category: req.body.category
-            };
-        db.collection('listings').insert(newPost, function(err, inserted) {
-            if (err) console.log(err);
-            res.send ("listing added");
-        });
-    };
+exports.category = function(req, res){
+    var category = req.params.category;
+    Listing.find({ category: category }, function(err, listings) {
+        res.render('category', { title: category, listings: listings });
+    });
 };
 
-exports.listing = function(db) {
-    return function(req, res){
-        res.render('listing', {title: "New Listing"});
-    };
+exports.addListing = function(req, res){
+    var post = 
+        {title: req.body.title,
+         user: req.body.user,
+         description: req.body.description,
+         category: req.body.category
+        };
+    var newListing = new Listing(post);
+    newListing.save(function(err) {
+        if (err) console.log(err);
+        res.send ("listing added");
+    });
 };
 
+exports.listing = function(req, res){
+    res.render('listing', {title: "New Listing"});
+};
