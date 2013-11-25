@@ -1,9 +1,13 @@
-# Dustin & Greg's Awesome Beginning Node Course
+# NicksList
 
-Hey Nodesters!
+This is a demo classified ads application.
 
-This is the class repository.
+It uses a default express generator and keeps all the data in memory.  That means when you restart your server, you lose all data.
 
-You'll find the demos in lesson_02 folder and the overall project demo in the nickslist folder.  
+Since this contains a package.json file, you can install all required modules with this command:
 
-Let me know any questions that come up and I'll use them to make the examples better.
+    npm install
+
+It also includes a start script, so you can start the server with:
+
+    npm start
